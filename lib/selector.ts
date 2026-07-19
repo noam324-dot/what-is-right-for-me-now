@@ -1,0 +1,3 @@
+import { moments } from "@/data/moments";
+import { AppData, ModeId, Moment } from "./types";
+export function chooseMoment(mode: ModeId,data: AppData): Moment { const pool=moments.filter(m=>m.supportedModes.includes(mode)&&m.id!==data.lastMomentId); const candidates=pool.length?pool:moments.filter(m=>m.supportedModes.includes(mode)); const weighted=candidates.map(m=>{const f=data.feedback[m.id]; return {m,w:1+(f?.yes||0)*.35-(f?.no||0)*.08+(!f?.shown?1.2:0)};}); const total=weighted.reduce((s,x)=>s+Math.max(.3,x.w),0); let n=Math.random()*total; for(const x of weighted){n-=Math.max(.3,x.w);if(n<=0)return x.m;} return weighted[0].m; }
