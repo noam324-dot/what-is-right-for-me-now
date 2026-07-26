@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { modes } from "@/data/modes";
-import { generalIdeas, ideasByMode, pauseLines, thoughtLines } from "@/data/toolkit";
+import { generalIdeas, ideasByMode, thoughtLines } from "@/data/toolkit";
 import { AppData, ModeId } from "@/lib/types";
 import { completeWithChoice, defaults, loadData, saveData, weeklyCount } from "@/lib/storage";
 
-type Screen = "home" | "modes" | "toolkit" | "pause" | "idea" | "thought" | "done" | "settings";
+type Screen = "home" | "modes" | "toolkit" | "idea" | "thought" | "done" | "settings";
 
 const sample = (items: string[], previous?: string) => {
   const alternatives = items.filter((item) => item !== previous);
@@ -48,11 +48,6 @@ export default function App() {
     setScreen("toolkit");
   };
 
-  const openPause = () => {
-    setContent(sample(pauseLines));
-    setScreen("pause");
-  };
-
   const openIdea = () => {
     if (!mode) return;
     setContent(sample([...generalIdeas, ...ideasByMode[mode], ...data.personalActions]));
@@ -69,7 +64,7 @@ export default function App() {
     setContent(sample([...generalIdeas, ...ideasByMode[mode], ...data.personalActions], content));
   };
 
-  const finish = (kind: "רגע קטן" | "רעיון קטן" | "מחשבה קטנה") => {
+  const finish = (kind: "משהו קטן לעשות" | "עידוד קטן") => {
     if (!mode) return;
     setData((current) => completeWithChoice(current, mode, `${kind}: ${content}`));
     setScreen("done");
@@ -123,20 +118,10 @@ export default function App() {
       <ModeMarker mode={selectedMode} />
       <h1>מה תרצה לקבל עכשיו?</h1>
       <div className="entryCards">
-        <button onClick={openPause}><span aria-hidden="true">🌱</span><b>רגע קטן</b><small>רגע אחד בלי שאלות</small></button>
-        <button onClick={openIdea}><span aria-hidden="true">🧰</span><b>רעיון קטן</b><small>אפשרות מעשית אחת</small></button>
-        <button onClick={openThought}><span aria-hidden="true">💭</span><b>מחשבה קטנה</b><small>דרך נוספת לראות את הרגע</small></button>
+        <button onClick={openIdea}><span aria-hidden="true">🧰</span><b>משהו קטן לעשות</b><small>פעולה מיידית של כמה שניות</small></button>
+        <button onClick={openThought}><span aria-hidden="true">💪</span><b>עידוד קטן</b><small>כמה מילים שיעזרו להמשיך</small></button>
       </div>
     </div>}
-
-    {screen === "pause" && <ExperienceScreen
-      mode={selectedMode}
-      icon="🌱"
-      title="רגע קטן"
-      content={content}
-      onBack={() => setScreen("toolkit")}
-      onFinish={() => finish("רגע קטן")}
-    />}
 
     {screen === "idea" && <ExperienceScreen
       mode={selectedMode}
@@ -144,17 +129,17 @@ export default function App() {
       title="אפשר לנסות..."
       content={content}
       onBack={() => setScreen("toolkit")}
-      onFinish={() => finish("רעיון קטן")}
-      secondary={<button className="secondary" onClick={anotherIdea}>רעיון אחר</button>}
+      onFinish={() => finish("משהו קטן לעשות")}
+      secondary={<button className="secondary" onClick={anotherIdea}>משהו אחר</button>}
     />}
 
     {screen === "thought" && <ExperienceScreen
       mode={selectedMode}
-      icon="💭"
-      title="מחשבה קטנה"
+      icon="💪"
+      title="עידוד קטן"
       content={content}
       onBack={() => setScreen("toolkit")}
-      onFinish={() => finish("מחשבה קטנה")}
+      onFinish={() => finish("עידוד קטן")}
     />}
 
     {screen === "done" && <div className="center done">
@@ -175,7 +160,7 @@ export default function App() {
       </section>
       <section className="settingsSection">
         <h2>פעולות אישיות</h2>
-        <p className="sectionHint">רעיונות אישיים שיוכלו להופיע ב„רעיון קטן”.</p>
+        <p className="sectionHint">פעולות אישיות שיוכלו להופיע ב„משהו קטן לעשות”.</p>
         <div className="inputRow"><input value={action} onChange={(event) => setAction(event.target.value)} placeholder="למשל: לצאת למרפסת" aria-label="פעולה אישית חדשה" /><button onClick={addAction}>שמירה</button></div>
         {data.personalActions.map((item, index) => <div className="saved" key={item + index}>{item}<button onClick={() => setData((current) => ({ ...current, personalActions: current.personalActions.filter((_, itemIndex) => itemIndex !== index) }))} aria-label={`מחיקת ${item}`}>×</button></div>)}
       </section>
