@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { modes } from "@/data/modes";
-import { ideasByMode, pauseLines, thoughtLines } from "@/data/toolkit";
+import { generalIdeas, ideasByMode, pauseLines, thoughtLines } from "@/data/toolkit";
 import { AppData, ModeId } from "@/lib/types";
 import { completeWithChoice, defaults, loadData, saveData, weeklyCount } from "@/lib/storage";
 
@@ -55,7 +55,7 @@ export default function App() {
 
   const openIdea = () => {
     if (!mode) return;
-    setContent(sample([...ideasByMode[mode], ...data.personalActions]));
+    setContent(sample([...generalIdeas, ...ideasByMode[mode], ...data.personalActions]));
     setScreen("idea");
   };
 
@@ -66,7 +66,7 @@ export default function App() {
 
   const anotherIdea = () => {
     if (!mode) return;
-    setContent(sample([...ideasByMode[mode], ...data.personalActions], content));
+    setContent(sample([...generalIdeas, ...ideasByMode[mode], ...data.personalActions], content));
   };
 
   const finish = (kind: "רגע קטן" | "רעיון קטן" | "מחשבה קטנה") => {
@@ -141,7 +141,7 @@ export default function App() {
     {screen === "idea" && <ExperienceScreen
       mode={selectedMode}
       icon="🧰"
-      title="רעיון קטן"
+      title="אפשר לנסות..."
       content={content}
       onBack={() => setScreen("toolkit")}
       onFinish={() => finish("רעיון קטן")}
@@ -160,8 +160,8 @@ export default function App() {
     {screen === "done" && <div className="center done">
       <ModeMarker mode={selectedMode} />
       <span className="doneIcon">🌱</span>
-      <h1>יצרת רגע קטן של בחירה.</h1>
-      <p>עצם זה שעצרת לרגע ופגשת את מה שקורה —<br />כבר נחשב.</p>
+      <h1>איזה יופי שעצרת לרגע ולא פעלת באופן אוטומטי.</h1>
+      <p>גם אם הדחף עדיין כאן, כבר יצרת רגע קטן של בחירה.<br />זה בדיוק מה שאנחנו מתרגלים.</p>
       <button className="primary" onClick={goHome}>חזרה למסך הראשי</button>
     </div>}
 
