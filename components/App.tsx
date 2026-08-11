@@ -64,6 +64,10 @@ export default function App() {
     setContent(sample([...generalIdeas, ...ideasByMode[mode], ...data.personalActions], content));
   };
 
+  const anotherThought = () => {
+    setContent(sample(thoughtLines, content));
+  };
+
   const finish = (kind: "משהו קטן לעשות" | "עידוד קטן") => {
     if (!mode) return;
     setData((current) => completeWithChoice(current, mode, `${kind}: ${content}`));
@@ -140,6 +144,7 @@ export default function App() {
       content={content}
       onBack={() => setScreen("toolkit")}
       onFinish={() => finish("עידוד קטן")}
+      secondary={<button className="secondary" onClick={anotherThought}>עידוד אחר</button>}
     />}
 
     {screen === "done" && <div className="center done">
